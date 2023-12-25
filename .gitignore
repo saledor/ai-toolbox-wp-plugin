@@ -1,0 +1,25 @@
+# Exclude wp-content directory
+wp-content/
+
+# Exclude db_data directory
+db_data/
+
+# Composer dependencies
+/vendor/
+
+# IDE-specific
+.idea/
+.vscode/
+
+# Logs and caches
+*.log
+.cache/
+
+# PHP temp files
+*.swp
+*.swo
+*.swn
+
+.env
+TODO.md
+images/

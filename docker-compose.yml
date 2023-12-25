@@ -1,0 +1,36 @@
+version: '3'
+services:
+  db:
+    image: mysql:latest
+    network_mode: "host"
+    command: --bind-address=0.0.0.0
+    volumes:
+      - ./db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+      MYSQL_DATABASE: localai
+      MYSQL_USER: localai
+      MYSQL_PASSWORD: $MYSQL_PASSWORD
+    ports:
+      - 3306:3306
+  wordpress:
+    # image: wordpress:latest
+    build: .
+    volumes:
+      - ./php.ini:/usr/local/etc/php/conf.d/php.ini
+      - ./wp-content:/var/www/html/wp-content
+      - ./ai-toolbox:/var/www/html/wp-content/plugins/ai-toolbox
+      - ./ports_wp.conf:/etc/apache2/ports.conf
+    environment:
+      WORDPRESS_DEBUG: 1
+      WORDPRESS_DB_HOST: 127.0.0.1:3306
+      WORDPRESS_DB_USER: localai
+      WORDPRESS_DB_PASSWORD: $MYSQL_PASSWORD
+      WORDPRESS_DB_NAME: localai
+      WP_ENVIRONMENT_TYPE: development
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_DEBUG', true);
+        define('WP_DEBUG_LOG', true);
+        define('WP_DEBUG_DISPLAY', false);
+        @ini_set('display_errors', 0);
+    network_mode: "host"
