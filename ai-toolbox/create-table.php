@@ -1,8 +1,9 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit;
 global $ai_toolbox_db_version;
 $ai_toolbox_db_version = '1.1';
 
-function create_ai_toolbox_table() {
+function ai_toolbox_create_ai_toolbox_table() {
     global $wpdb;
     global $ai_toolbox_db_version;
 
@@ -52,4 +53,4 @@ function ai_toolbox_run_migration($installed_ver) {
 }
 
 add_action('plugins_loaded', 'ai_toolbox_update_db_check');
-register_activation_hook(__FILE__, 'create_ai_toolbox_table');
+register_activation_hook(__FILE__, 'ai_toolbox_create_ai_toolbox_table');

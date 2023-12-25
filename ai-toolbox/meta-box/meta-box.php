@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit;
 // meta-box.php:
 if (!defined('AI_TOOLBOX_INIT')) {
     exit;
@@ -6,11 +7,19 @@ if (!defined('AI_TOOLBOX_INIT')) {
 require_once 'api-integration.php';
 require_once 'meta-box-actions.php';
 
-function ai_toolbox_meta_box()
+/**
+ * Add the AI Toolbox meta box.
+ */
+function ai_toolbox_add_meta_box()
 {
     add_meta_box('ai_toolbox_meta_box', 'AI ToolBox', 'ai_toolbox_meta_box_callback', ['post', 'page'], 'side', 'default');
 }
 
+/**
+ * Callback function for AI Toolbox meta box.
+ *
+ * @param WP_Post $post The post object.
+ */
 function ai_toolbox_meta_box_callback($post)
 {
     wp_nonce_field('ai_toolbox_call_meta_box_data', 'ai_toolbox_meta_box_nonce');
@@ -56,7 +65,13 @@ function ai_toolbox_meta_box_callback($post)
 
 
 
-function parse_content($raw_content)
+/**
+ * Parses the content from a raw string format.
+ *
+ * @param string $raw_content The raw content string.
+ * @return array Parsed content elements.
+ */
+function ai_toolbox_parse_content($raw_content)
 {
     $title = $content = $suggestions = '';
 
@@ -79,10 +94,10 @@ function parse_content($raw_content)
     ];
 }
 
-
-
-
-function handle_get_task_status_ajax()
+/**
+ * AJAX handler for getting task status.
+ */
+function ai_toolbox_handle_get_task_status_ajax()
 {
     global $wpdb;
     $table_name = $wpdb->prefix . 'ai_toolbox';
@@ -110,7 +125,7 @@ function handle_get_task_status_ajax()
     if ($response_status === 'success' && $response_code >= 200 && $response_code < 300) {
         // Decode the JSON response content.
         // Parse the content.
-        $parsed_content = parse_content($response_content['choices'][0]['message']['content']);
+        $parsed_content = ai_toolbox_parse_content($response_content['choices'][0]['message']['content']);
         if (!empty($parsed_content['content'])) {
             wp_send_json_success([
                 'status' => 'success',
@@ -169,12 +184,9 @@ function handle_get_task_status_ajax()
 }
 
 
-// Add the action for the AJAX handler
-add_action('wp_ajax_get_task_status', 'handle_get_task_status_ajax');
-
-
-add_action('add_meta_boxes', 'ai_toolbox_meta_box');
-
+// Register actions
+add_action('add_meta_boxes', 'ai_toolbox_add_meta_box');
+add_action('wp_ajax_get_task_status', 'ai_toolbox_handle_get_task_status_ajax');
 add_action('ai_toolbox_process_request', function ($task_id, $args) {
-    process_ai_toolbox_request($task_id, $args);
+    ai_toolbox_process_request($task_id, $args);
 }, 10, 2);

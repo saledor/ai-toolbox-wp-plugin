@@ -1,14 +1,15 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit;
 if (!defined('AI_TOOLBOX_INIT')) {
     exit; // Exit if accessed directly
 }
 
-function settings_menu_page()
+function ai_toolbox_settings_menu_page()
 {
     // Check for POST request and nonce verification
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Verify the nonce field
-        if (!isset($_POST['ai_tool_box_nonce_field']) || !wp_verify_nonce($_POST['ai_tool_box_nonce_field'], 'ai_tool_box_action')) {
+        if (!isset($_POST['ai_tool_box_nonce_field']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['ai_tool_box_nonce_field'])), 'ai_tool_box_action')) {
             die('Security check failed');
         }
         // Define an array of acceptable version values
@@ -38,8 +39,8 @@ function settings_menu_page()
             <div class="alert alert-info" role="alert">
                 Your API key is set. You can now add a new page or post to use the plugin:
                 <ul>
-                    <li><a href="<?php echo admin_url('post-new.php'); ?>">Add New Post</a></li>
-                    <li><a href="<?php echo admin_url('post-new.php?post_type=page'); ?>">Add New Page</a></li>
+                <li><a href="<?php echo esc_url(admin_url('post-new.php')); ?>">Add New Post</a></li>
+                <li><a href="<?php echo esc_url(admin_url('post-new.php?post_type=page')); ?>">Add New Page</a></li>
                 </ul>
             </div>
         <?php else : ?>
@@ -52,7 +53,7 @@ function settings_menu_page()
             <?php wp_nonce_field('ai_tool_box_action', 'ai_tool_box_nonce_field'); ?>
             <div class="form-group">
                 <label for="chatgpt_api_key">ChatGPT API Key</label>
-                <input type="text" name="chatgpt_api_key" id="chatgpt_api_key" class="form-control" placeholder="sk-..." value="<?php echo $chatgpt_api_key; ?>">
+                <input type="text" name="chatgpt_api_key" id="chatgpt_api_key" class="form-control" placeholder="sk-..." value="<?php echo esc_attr($chatgpt_api_key); ?>">
                 <small class="form-text text-muted">Get your API key from <a href="https://platform.openai.com/account/api-keys" target="_blank">OpenAI</a></small>
             </div>
 

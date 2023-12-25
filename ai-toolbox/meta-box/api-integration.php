@@ -1,11 +1,12 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit;
 // api-integration.php:
 if (!defined('AI_TOOLBOX_INIT')) {
     exit;
 }
 require_once 'db-integration.php';
 
-function prepare_api_args($api_key, $api_version, $directive, $h2_count, $h3_count, $seo_keywords, $seo_keywords_avoid, $seo_question)
+function ai_toolbox_prepare_api_args($api_key, $api_version, $directive, $h2_count, $h3_count, $seo_keywords, $seo_keywords_avoid, $seo_question)
 {
     $system_content  = "You are a content writer that lives in a framework.";
     $system_content .= " You are tasked to help users on writing or editing articles. Use the language of the user.";
@@ -46,7 +47,7 @@ function prepare_api_args($api_key, $api_version, $directive, $h2_count, $h3_cou
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer ' . $api_key
         ],
-        'body' => json_encode([
+        'body' => wp_json_encode([
             'model' => $api_version,
             'messages' => $messages
         ]),
@@ -57,9 +58,9 @@ function prepare_api_args($api_key, $api_version, $directive, $h2_count, $h3_cou
 
 
 
-function call_openai_api()
+function ai_toolbox_call_openai_api()
 {
-    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'ai_toolbox_call_meta_box_data')) {
+    if (!isset($_POST['nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce'])), 'ai_toolbox_call_meta_box_data')) {
         wp_send_json_error(['error' => 'Nonce verification failed.'], 403);
     }
     global $wpdb;
@@ -69,9 +70,9 @@ function call_openai_api()
     $api_version = get_option('ai_toolbox_chatgpt_version');
 
     if (empty($api_key)) {
-        echo json_encode([
-            'error' => 'API key is missing.',
-            'settingsLink' => admin_url('options-general.php?page=ai_toolbox_settings')
+        echo wp_json_encode([
+            'error' => esc_html__('API key is missing.', 'your-text-domain'),
+            'settingsLink' => esc_url(admin_url('options-general.php?page=ai_toolbox_settings'))
         ]);
         die();
     }
@@ -90,10 +91,10 @@ function call_openai_api()
     $seo_question = sanitize_text_field($_POST['seo_question']);
 
     // API args
-    $args = prepare_api_args($api_key, $api_version, $directive, $h2_count, $h3_count, $seo_keywords, $seo_keywords_avoid, $seo_question);
+    $args = ai_toolbox_prepare_api_args($api_key, $api_version, $directive, $h2_count, $h3_count, $seo_keywords, $seo_keywords_avoid, $seo_question);
 
     // Insert the request data and get the task ID
-    $task_id = insert_request_data($table_name, $args, $api_version);
+    $task_id = ai_toolbox_insert_request_data($table_name, $args, $api_version);
 
     // Schedule a custom action and pass the task ID and args to it
     wp_schedule_single_event(time(), 'ai_toolbox_process_request', [$task_id, $args]);
@@ -104,14 +105,14 @@ function call_openai_api()
 
 
 // This function will be called by the WordPress cron job
-function process_ai_toolbox_request($task_id, $args)
+function ai_toolbox_process_request($task_id, $args)
 {
     $response = wp_remote_post("https://api.openai.com/v1/chat/completions", $args);
     
     global $wpdb;
     $table_name = $wpdb->prefix . 'ai_toolbox';
 
-    update_response_data($table_name, $response, $task_id);
+    ai_toolbox_update_response_data($table_name, $response, $task_id);
 }
 
-add_action('wp_ajax_call_openai_api', 'call_openai_api');
+add_action('wp_ajax_call_openai_api', 'ai_toolbox_call_openai_api');

@@ -3,6 +3,7 @@ AI ToolBox
 
 ## Alternative Names
 ai_toolbox
+
 ai-toolbox
 
 ## Plugin Folder Name

@@ -1,8 +1,12 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit;
 if (!defined('AI_TOOLBOX_INIT')) {
     exit; // Exit if accessed directly
 }
 
+/**
+ * Renders the main menu page for AI ToolBox in the WordPress admin area.
+ */
 function ai_toolbox_main_menu_page() {
     ?>
     <div class="container">
@@ -26,7 +30,7 @@ function ai_toolbox_main_menu_page() {
         
         <h2>How to Get Started</h2>
         <ol>
-            <li>Go to <a href="admin.php?page=settings_menu">Settings</a> and insert your ChatGPT API key.</li>
+            <li>Go to <a href="<?php echo admin_url('admin.php?page=settings_menu'); ?>">Settings</a> and insert your ChatGPT API key.</li>
             <li>Select your ChatGPT Version.</li>
             <li>Save and start using AI ToolBox features.</li>
         </ol>
