@@ -3,7 +3,7 @@ services:
   db:
     image: mysql:latest
     network_mode: "host"
-    command: --bind-address=0.0.0.0
+    command: --bind-address=127.0.0.1
     volumes:
       - ./db_data:/var/lib/mysql
     environment:
