@@ -66,3 +66,19 @@ function ai_toolbox_enqueue_bootstrap()
     wp_enqueue_script('bootstrap-js', plugin_dir_url(__FILE__) . 'js/bootstrap.min.js', array('jquery', 'popper-js'), '', true);
 }
 add_action('admin_enqueue_scripts', 'ai_toolbox_enqueue_bootstrap');
+
+
+/**
+ * Adds a settings link to the plugin action links.
+ *
+ * @param array $links Existing action links for the plugin.
+ * @return array Modified action links array.
+ */
+function ai_toolbox_add_settings_link($links) {
+    $settings_link = '<a href="' . admin_url('admin.php?page=ai_toolbox_settings_menu') . '">Settings</a>';
+    array_unshift($links, $settings_link); // Add to the beginning of the links array
+    return $links;
+}
+
+// Hook the function into the 'plugin_action_links_' filter
+add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'ai_toolbox_add_settings_link');
