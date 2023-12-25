@@ -22,6 +22,16 @@ function ai_toolbox_add_meta_box()
  */
 function ai_toolbox_meta_box_callback($post)
 {
+    // Check if the API key is set
+    $chatgpt_api_key = get_option('ai_toolbox_chatgpt_api_key', '');
+
+    // If API key is missing, display a warning and return
+    if (empty($chatgpt_api_key)) {
+        echo '<div class="alert alert-warning" role="alert">';
+        echo 'Warning: API key is missing. Please go to the <a href="' . esc_url(admin_url('admin.php?page=ai_toolbox_settings_menu')) . '">Settings</a> page and enter the API key.';
+        echo '</div>';
+        return;
+    }
     wp_nonce_field('ai_toolbox_call_meta_box_data', 'ai_toolbox_meta_box_nonce');
     echo '<div class="form-group">';
     echo '<label for="ai_toolbox_directive">Content Directive:</label>';

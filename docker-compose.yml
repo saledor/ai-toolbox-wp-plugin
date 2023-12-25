@@ -3,7 +3,7 @@ services:
   db:
     image: mysql:latest
     network_mode: "host"
-    command: --bind-address=0.0.0.0
+    command: --bind-address=127.0.0.1
     volumes:
       - ./db_data:/var/lib/mysql
     environment:
@@ -18,7 +18,7 @@ services:
     build: .
     volumes:
       - ./php.ini:/usr/local/etc/php/conf.d/php.ini
-      - ./wp-content:/var/www/html/wp-content
+      - ./wp-data:/var/www/html/
       - ./ai-toolbox:/var/www/html/wp-content/plugins/ai-toolbox
       - ./ports_wp.conf:/etc/apache2/ports.conf
     environment:
