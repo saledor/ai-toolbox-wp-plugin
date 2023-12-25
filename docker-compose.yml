@@ -14,7 +14,6 @@ services:
     ports:
       - 3306:3306
   wordpress:
-    # image: wordpress:latest
     build: .
     volumes:
       - ./php.ini:/usr/local/etc/php/conf.d/php.ini
