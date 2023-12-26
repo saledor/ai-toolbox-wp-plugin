@@ -3,7 +3,7 @@ Contributors: Mustafa Öztürk
 Tags: AI, content, editing, WordPress, OpenAI
 Requires at least: 4.0
 Tested up to: 6.4.2
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,9 @@ Q: Is it free?
 A: Yes, the plugin is free to use. However, you will need a ChatGPT API key which may have its own cost.
 
 == Changelog ==
+
+= 1.0.2 =
+* Validate API key while in settings page.
 
 = 1.0.1 =
 * Updated readme to include detailed information about the use of OpenAI's third-party service.
