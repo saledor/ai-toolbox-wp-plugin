@@ -28,6 +28,12 @@ function ai_toolbox_settings_menu_page()
 {
     $api_key_validity = false;
     $chatgpt_api_key = get_option('ai_toolbox_chatgpt_api_key', '');
+    // Define an array of valid versions
+    $valid_versions = array(
+        'gpt-3.5-turbo-1106' => 'v3.5 (gpt-3.5-turbo-1106)',
+        'gpt-3.5-turbo-16k' => 'v3.5 (gpt-3.5-turbo-16k)',
+        'gpt-4' => 'v4 (gpt-4)'
+    );
     // Check for POST request and nonce verification
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Verify the nonce field
@@ -35,7 +41,9 @@ function ai_toolbox_settings_menu_page()
             die('Security check failed');
         }
         // Define an array of acceptable version values
-        $valid_versions = array('gpt-3.5-turbo-16k', 'gpt-4', 'gpt-3.5-turbo-1106');
+        $chatgpt_version = get_option('ai_toolbox_chatgpt_version', '');
+
+        
         $sanitized_version = sanitize_text_field($_POST['chatgpt_version']);
         $sanitized_key = sanitize_text_field($_POST['chatgpt_api_key']);
 
@@ -54,12 +62,11 @@ function ai_toolbox_settings_menu_page()
         }
 
         // Check if the submitted version is in the array of valid versions
-        if (in_array($sanitized_version, $valid_versions)) {
+        if (array_key_exists($sanitized_version, $valid_versions)) {
             update_option('ai_toolbox_chatgpt_api_key', $sanitized_key);
             update_option('ai_toolbox_chatgpt_version', $sanitized_version);
         } else {
-            // Handle the error appropriately, e.g., set an error message, log the attempt, etc.
-            // For now, let's just die with an error message
+            // Handle the error appropriately
             die('Invalid ChatGPT version submitted');
         }
         $chatgpt_api_key = get_option('ai_toolbox_chatgpt_api_key', ''); // reload
@@ -68,7 +75,7 @@ function ai_toolbox_settings_menu_page()
         $api_key_validity = !empty($chatgpt_api_key) && ai_toolbox_verify_api_key($chatgpt_api_key);
     }
 
-    
+
     $chatgpt_version = get_option('ai_toolbox_chatgpt_version', '');
 ?>
 
@@ -106,12 +113,13 @@ function ai_toolbox_settings_menu_page()
             <div class="form-group">
                 <label for="chatgpt_version">ChatGPT Version</label>
                 <select name="chatgpt_version" id="chatgpt_version" class="form-control">
-                    <option value="gpt-3.5-turbo-1106" <?php echo $chatgpt_version === 'gpt-3.5-turbo-1106' ? 'selected' : ''; ?>>v3.5 (gpt-3.5-turbo-1106)</option>
-                    <option value="gpt-3.5-turbo-16k" <?php echo $chatgpt_version === 'gpt-3.5-turbo-16k' ? 'selected' : ''; ?>>v3.5 (gpt-3.5-turbo-16k)</option>
-                    <option value="gpt-4" <?php echo $chatgpt_version === 'gpt-4' ? 'selected' : ''; ?>>v4 (gpt-4)</option>
+                    <?php foreach ($valid_versions as $model_key => $model_name) : ?>
+                        <option value="<?php echo esc_attr($model_key); ?>" <?php echo $chatgpt_version === $model_key ? 'selected' : ''; ?>>
+                            <?php echo esc_html($model_name); ?>
+                        </option>
+                    <?php endforeach; ?>
                 </select>
             </div>
-
             <button type="submit" class="btn btn-primary">Save</button>
         </form>
     </div>
