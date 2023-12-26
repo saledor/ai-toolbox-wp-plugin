@@ -10,4 +10,4 @@ ai-toolbox
 ai-toolbox
 
 ## Download URL
-[AI ToolBox](https://github.com/saledor/ai-toolbox-wp-plugin/raw/master/bundle_plugin/ai-toolbox.zip "AI ToolBox Download")
+[AI ToolBox](https://github.com/saledor/ai-toolbox-wp-plugin/releases/download/v1.0.2/ai-toolbox.zip "AI ToolBox Download")
