@@ -27,7 +27,7 @@ function ai_toolbox_verify_api_key($api_key)
 function ai_toolbox_settings_menu_page()
 {
     $api_key_validity = false;
-
+    $chatgpt_api_key = get_option('ai_toolbox_chatgpt_api_key', '');
     // Check for POST request and nonce verification
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Verify the nonce field
@@ -35,7 +35,7 @@ function ai_toolbox_settings_menu_page()
             die('Security check failed');
         }
         // Define an array of acceptable version values
-        $valid_versions = array('gpt-3.5-turbo-16k', 'gpt-4');
+        $valid_versions = array('gpt-3.5-turbo-16k', 'gpt-4', 'gpt-3.5-turbo-1106');
         $sanitized_version = sanitize_text_field($_POST['chatgpt_version']);
         $sanitized_key = sanitize_text_field($_POST['chatgpt_api_key']);
 
@@ -62,9 +62,13 @@ function ai_toolbox_settings_menu_page()
             // For now, let's just die with an error message
             die('Invalid ChatGPT version submitted');
         }
+        $chatgpt_api_key = get_option('ai_toolbox_chatgpt_api_key', ''); // reload
+    } else {
+        // Check the API key validity only when the page is initially loaded
+        $api_key_validity = !empty($chatgpt_api_key) && ai_toolbox_verify_api_key($chatgpt_api_key);
     }
 
-    $chatgpt_api_key = get_option('ai_toolbox_chatgpt_api_key', '');
+    
     $chatgpt_version = get_option('ai_toolbox_chatgpt_version', '');
 ?>
 
@@ -102,6 +106,7 @@ function ai_toolbox_settings_menu_page()
             <div class="form-group">
                 <label for="chatgpt_version">ChatGPT Version</label>
                 <select name="chatgpt_version" id="chatgpt_version" class="form-control">
+                    <option value="gpt-3.5-turbo-1106" <?php echo $chatgpt_version === 'gpt-3.5-turbo-1106' ? 'selected' : ''; ?>>v3.5 (gpt-3.5-turbo-1106)</option>
                     <option value="gpt-3.5-turbo-16k" <?php echo $chatgpt_version === 'gpt-3.5-turbo-16k' ? 'selected' : ''; ?>>v3.5 (gpt-3.5-turbo-16k)</option>
                     <option value="gpt-4" <?php echo $chatgpt_version === 'gpt-4' ? 'selected' : ''; ?>>v4 (gpt-4)</option>
                 </select>
