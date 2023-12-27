@@ -4,7 +4,7 @@ if (!defined('ABSPATH')) exit;
  * Plugin Name: AI ToolBox
  * Plugin URI: https://www.saledor.com/ai-toolbox
  * Description: AI ToolBox enhances your WordPress experience by leveraging AI to assist in content generation, editing, and product text suggestions.
- * Version: 1.0.2
+ * Version: 1.0.3
  * Author: Mustafa Öztürk
  * Author URI: https://www.saledor.com
  * License: GPLv2 or later

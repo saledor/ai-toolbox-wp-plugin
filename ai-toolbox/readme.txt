@@ -33,6 +33,9 @@ A: Yes, the plugin is free to use. However, you will need a ChatGPT API key whic
 
 == Changelog ==
 
+= 1.0.3 =
+* Escape URL for settings page in main page.
+
 = 1.0.2 =
 * Validate API key while in settings page.
 
